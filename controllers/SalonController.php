@@ -114,6 +114,7 @@ class SalonController extends Controller
         ]);
     }
 
+
     /**
      * Deletes an existing SalonModel model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

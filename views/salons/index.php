@@ -10,7 +10,12 @@ use yii\helpers\Url;
     <div class="container-fluid mt-5  ">
         <div class="row pt-5">
             <div class="col-lg-3">
-                <?= $this->render('/partialviews/_sidenav'); ?>
+            <?= $this->render('/partialviews/_sidenav', [
+            'popularHairSalons' => $popularHairSalons,
+            'popularNailClinics' => $popularNailClinics,
+            'beautyShops' => $beautyShops,
+            'otherSalons'=>$otherSalons
+            ]); ?>
 
             </div>
             <div class="col-lg-9 col-md-8 col-sm-4 col-xs-6">

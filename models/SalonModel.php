@@ -114,4 +114,12 @@ class SalonModel extends \yii\db\ActiveRecord
     {
         return $this->hasOne(CustomerModel::class, ['id' => 'customer_id']);
     }
+    public function getAppointments()
+    {
+        return $this->hasMany(Appointments::class, ['salon_id' => 'id']);
+    }
+    public function getProducts()
+    {
+        return $this->hasMany(ProductsModel::class, ['salon_id' => 'id']);
+    }
 }

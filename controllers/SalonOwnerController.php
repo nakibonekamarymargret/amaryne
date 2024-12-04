@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 
+use app\models\ProductsModel;
 use app\models\RegisterForm;
 use app\models\SalonModel;
 use app\models\Services;
@@ -259,9 +260,8 @@ class SalonOwnerController extends Controller
             return $this->redirect(['salon-owner/create-salon']);
         }
 
-        // Fetch services of the salon
         $model = new Services();
-        $services = Services::find()->where(['salon_id' => $salon->id])->all();
+        $services = Services::find()->where(['salon_id' => $salon->id, 'status' => 'active'])->all();
 
         return $this->render('services', [
             'salon' => $salon,
@@ -302,6 +302,97 @@ class SalonOwnerController extends Controller
             'model' => $model,
         ]);
     }
+    public function actionUpdateService($id)
+    {
+        $model = Services::findOne($id);
+        if (!$model) {
+            throw new NotFoundHttpException("Service not found");
+        }
+
+        $request = Yii::$app->request;
+        if ($request->isAjax) {
+            return $this->renderAjax('_edit_form', ['model' => $model]);
+        }
+
+        if ($model->load($request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', "Service has been successfully updated");
+            return $this->redirect(['services']);
+        }
+
+        return $this->render('update-service', ['model' => $model]);
+    }
+    public function actionDisableService()
+    {
+        $id = Yii::$app->request->post('id');
+        $service = Services::findOne($id);
+
+        if ($service) {
+            $service->status = 'inactive';
+            if ($service->save()) {
+                return json_encode(['success' => true, 'message' => 'Service disabled successfully.']);
+            }
+        }
+
+        return json_encode(['success' => false, 'message' => 'Failed to disable service.']);
+    }
+
+    // products management
+    public function actionProducts()
+    {
+        $this->layout = 'ownerLayout';
+
+        $salon = ProductsModel::find()->where(['owner_id' => Yii::$app->user->id])->one();
+
+        if ($salon === null) {
+            Yii::$app->session->setFlash('error', 'Please create a salon first.');
+            return $this->redirect(['salon-owner/create-salon']);
+        }
+
+        $model = new Services();
+        $services = Services::find()->where(['salon_id' => $salon->id, 'status' => 'active'])->all();
+
+        return $this->render('services', [
+            'salon' => $salon,
+            'model' => $model,
+            'services' => $services,
+            'salon_id' => $salon->id,
+        ]);
+    }
+
+    public function actionCreateProduct()
+    {
+        $model = new Services();
+        $salon = ProductsModel::find()->where(['owner_id' => Yii::$app->user->id])->one();
+
+        if ($salon !== null) {
+            $model->salon_id = $salon->id;
+        } else {
+            Yii::$app->session->setFlash('error', 'Salon not found. Please create a salon first.');
+            return $this->redirect(['salon-owner/create-salon']);
+        }
+
+        if ($model->load(Yii::$app->request->post())) {
+            $file = UploadedFile::getInstance($model, 'service_image');
+            if ($file) {
+                $model->service_image = 'uploads/' . uniqid('service_') . '.' . $file->extension;
+                $file->saveAs($model->service_image);
+            }
+
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'Service created successfully.');
+                return $this->redirect(['salon-owner/services']);
+            } else {
+                Yii::$app->session->setFlash('error', 'Error creating service: ' . implode(', ', $model->getFirstErrors()));
+            }
+        }
+
+        return $this->render('create-service', [
+            'model' => $model,
+        ]);
+    }
+   
+    
+
     protected function findModel($id)
     {
         if (($model = SalonModel::findOne($id)) !== null) {

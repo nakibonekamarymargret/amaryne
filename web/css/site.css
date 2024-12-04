@@ -267,10 +267,9 @@ hr {
     font-size: 1.25rem;
     font-weight: bold;
     text-transform: uppercase;
-    color: #222121dc;
+    color: #f5c50cdc;
     text-align: center;
     justify-content: center;
-
 }
 
 hr.text-black {
@@ -664,7 +663,17 @@ p.card-text {
 .salon-index {
     align-items: stretch;
     display: flex;
+        background: linear-gradient(90deg, rgba(243, 156, 224, 1) 0%, rgba(255, 192, 203, 1) 50%, rgb(255, 50, 153) 100%);
+
     width: 100%;
+}
+.sidenav {
+}
+.nav-image{
+ border-radius: 50px;
+ width: 30px;
+ height: 30px;
+
 }
 
 @media (max-width: 991.98px) {
