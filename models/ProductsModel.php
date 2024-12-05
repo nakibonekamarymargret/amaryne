@@ -17,6 +17,7 @@ use Yii;
  * @property int|null $stock
  * @property string|null $created_at
  * @property string|null $updated_at
+ * @property float|null $discount
  *
  * @property Orders[] $orders
  * @property Salon $salon
@@ -40,7 +41,7 @@ class ProductsModel extends \yii\db\ActiveRecord
             [['salon_id', 'stock'], 'default', 'value' => null],
             [['salon_id', 'stock'], 'integer'],
             [['name', 'price'], 'required'],
-            [['price'], 'number'],
+            [['price', 'discount'], 'number'],
             [['description'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 100],
@@ -66,6 +67,7 @@ class ProductsModel extends \yii\db\ActiveRecord
             'stock' => 'Stock',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+            'discount' => 'Discount',
         ];
     }
 

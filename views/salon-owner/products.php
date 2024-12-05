@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Products</title>
     <style>
-        .service-description {
+        .product-description {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -19,11 +19,11 @@ use yii\widgets\ActiveForm;
             display: block;
         }
 
-        .service-description.expanded {
+        .product-description.expanded {
             white-space: normal;
         }
 
-        .service-image img {
+        .product-image img {
             width: 100%;
             height: 200px;
             object-fit: cover;
@@ -36,7 +36,7 @@ use yii\widgets\ActiveForm;
 </head>
 
 <body>
-    <div class="services-section container">
+    <div class="products-section container">
         <div class="header d-flex justify-content-between align-items-center mb-4">
             <h1 class="h3"><strong>My Products</strong></h1>
             <div class="options d-flex gap-2">
@@ -58,13 +58,13 @@ use yii\widgets\ActiveForm;
                         <h5 class="text-center text-uppercase font-monospace">
                             <?= Html::encode($product->name) ?>
                         </h5>
-                        <div class="service-card border p-3 rounded">
-                            <div class="service-image mb-3" data-id="<?= Html::encode($salon->id) ?>">
+                        <div class="product-card border p-3 rounded">
+                            <div class="product-image mb-3" data-id="<?= Html::encode($product->id) ?>">
                                 <img src="<?= Url::to('@web/' . Html::encode($product->image)) ?>"
                                     alt="<?= Html::encode($product->name) ?>">
                             </div>
                             <p class="mb-3">
-                                <span class="service-description" id="service-description-<?= $index ?>">
+                                <span class="product-description" id="product-description-<?= $index ?>">
                                     <?= Html::encode($product->description) ?>
                                 </span>
                                 <a href="#" id="toggle-link-<?= $index ?>" class="toggleDescription text-primary">
@@ -76,15 +76,14 @@ use yii\widgets\ActiveForm;
                                     Edit
                                 </button>
 
-                                <button type="button" class="btn btn-danger delete-button"
-                                    data-id="<?= $product->id ?>">Delete</button>
+                                <button type="button" class="btn btn-danger delete-button" data-id="<?= $product->id ?>">Delete</button>
                             </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="col-12 text-center">
-                    <p>No Product yet.</p>
+                    <p>No products yet.</p>
                     <a href="#" data-bs-toggle="modal" data-bs-target="#createProductModal" class="btn btn-primary">
                         Add Product
                     </a>
@@ -94,30 +93,29 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
 
-    <!-- Create Service Modal -->
+    <!-- Create Product Modal -->
     <div class="modal fade" id="createProductModal" tabindex="-1" aria-labelledby="createProductModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createProductModalLabel">Register Product</h5>
+                    <h5 class="modal-title" id="createProductModalLabel">Create Product</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <?php $form = ActiveForm::begin([
-                        'action' => ['salon-owner/create-product', 'salon_id' => $salon->id],
+                        'action' => ['salon-owner/create-products'],
                         'options' => ['enctype' => 'multipart/form-data']
-                    ]); ?>
-<?= $form->field($model, 'salon_id')->hiddenInput(['value' => $salon_id])->label(false) ?>
-
-                    <?= $form->field($product, 'image')->fileInput([
+                    ]) ?>
+                    <?= $form->field($model, 'image')->fileInput([
                         'class' => 'form-control',
                         'onchange' => 'previewImage(event)'
                     ])->label('Product Image') ?>
-                    <img id="imagePreview" class="img-fluid mt-2 mb-3 d-none" alt="Service Preview">
-                    <?= $form->field($product, 'name')->textInput(['class' => 'form-control'])->label('Product Name') ?>
-                    <?= $form->field($product, 'description')->textarea(['class' => 'form-control'])->label('Description') ?>
-                    <?= $form->field($product, 'price')->input('number', ['class' => 'form-control'])->label(' Price') ?>
+                    <img id="imagePreview" class="img-fluid mt-2 mb-3 d-none" alt="Product Preview">
+                    <?= $form->field($model, 'name')->textInput(['class' => 'form-control'])->label('Product Name') ?>
+                    <?= $form->field($model, 'description')->textarea(['class' => 'form-control'])->label('Description') ?>
+                    <?= $form->field($model, 'price')->input('number', ['class' => 'form-control'])->label('Product Price') ?>
+                    <?= $form->field($model, 'discount')->input('number', ['class' => 'form-control'])->label('Discount') ?>
                     <div class="text-end mt-3">
                         <?= Html::submitButton('Create', ['class' => 'btn btn-success']) ?>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -127,16 +125,16 @@ use yii\widgets\ActiveForm;
             </div>
         </div>
     </div>
-    <!-- Edit Service Modal -->
-    <div class="modal fade" id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel"
+    <!-- Edit Product Modal -->
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editServiceModalLabel">Edit Product</h5>
+                    <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="editServiceContent">
+                <div class="modal-body" id="editProductContent">
                     <!-- Content loaded via AJAX -->
                 </div>
             </div>
@@ -166,14 +164,14 @@ use yii\widgets\ActiveForm;
 
             editButtons.forEach(button => {
                 button.addEventListener('click', function () {
-                    const serviceId = this.getAttribute('data-id');
+                    const productId = this.getAttribute('data-id');
                     $.ajax({
-                        url: '<?= Yii::$app->urlManager->createUrl(['salon-owner/update-service']) ?>',
+                        url: '<?= Yii::$app->urlManager->createUrl(['salon-owner/update-product']) ?>',
                         type: 'GET',
-                        data: { id: serviceId },
+                        data: { id: productId },
                         success: function (response) {
-                            $('#editServiceContent').html(response);
-                            $('#editServiceModal').modal('show');
+                            $('#editProductContent').html(response);
+                            $('#editProductModal').modal('show');
                         },
                         error: function () {
                             alert('Error loading edit form.');
@@ -183,34 +181,34 @@ use yii\widgets\ActiveForm;
             });
         });
         document.addEventListener('DOMContentLoaded', function () {
-            const deleteButtons = document.querySelectorAll('.delete-button');
+    const deleteButtons = document.querySelectorAll('.delete-button');
 
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const serviceId = this.getAttribute('data-id');
-
-                    if (confirm('Are you sure you want to disable this service?')) {
-                        $.ajax({
-                            url: '<?= Yii::$app->urlManager->createUrl(['salon-owner/disable-service']) ?>',
-                            type: 'POST',
-                            data: { id: serviceId },
-                            success: function (response) {
-                                const data = JSON.parse(response);
-                                if (data.success) {
-                                    alert(data.message);
-                                    location.reload(); // Reload the page to reflect changes
-                                } else {
-                                    alert(data.message);
-                                }
-                            },
-                            error: function () {
-                                alert('An error occurred while disabling the service.');
-                            }
-                        });
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const productId = this.getAttribute('data-id');
+            
+            if (confirm('Are you sure you want to disable this product?')) {
+                $.ajax({
+                    url: '<?= Yii::$app->urlManager->createUrl(['salon-owner/disable-product']) ?>',
+                    type: 'POST',
+                    data: { id: productId },
+                    success: function (response) {
+                        const data = JSON.parse(response);
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload(); // Reload the page to reflect changes
+                        } else {
+                            alert(data.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while disabling the product.');
                     }
                 });
-            });
+            }
         });
+    });
+});
 
     </script>
 </body>

@@ -11,7 +11,7 @@ use yii\helpers\Url;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Service</title>
+    <title>Create Product</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -40,20 +40,23 @@ use yii\helpers\Url;
                                         <?= $form->field($model, 'salon_id')->hiddenInput()->label(false) ?>
 
                                         <div class="pt-3 mb-3">
-                                            <?= $form->field($model, 'image')->fileInput()->label('Service Image') ?>
+                                            <?= $form->field($model, 'image')->fileInput()->label('Product Image') ?>
                                         </div>
                                         <div class="pt-3">
-                                            <?= $form->field($model, 'name')->textInput(['class' => 'form-floating border mx-4 rounded'])->label('Service Name:') ?>
+                                            <?= $form->field($model, 'name')->textInput(['class' => 'form-floating border mx-4 rounded'])->label('Product Name:') ?>
                                         </div>
                                         <div class="pt-3">
                                             <?= $form->field($model, 'description')->textarea(['class' => 'form-floating border mx-4 rounded'])->label('Description:') ?>
                                         </div>
                                         <div class="pt-3">
-                                            <?= $form->field($model, 'price')->input('number', ['class' => 'form-floating border mx-4 rounded'])->label('Service Price:') ?>
+                                            <?= $form->field($model, 'price')->input('number', ['class' => 'form-floating border mx-4 rounded'])->label('Product Price:') ?>
                                         </div>
-                                  
+                                        <div class="pt-3">
+                                            <?= $form->field($model, 'discount')->input('number', ['class' => 'form-floating border mx-4 rounded'])->label('Discount:') ?>
+                                        </div>
+
                                         <div class="form-group d-flex justify-content-between">
-                                            <?= Html::submitButton('Create Service', ['class' => 'btn btn-success text-black']) ?>
+                                            <?= Html::submitButton('Create Product', ['class' => 'btn btn-success text-black']) ?>
                                             <?= Html::a('Cancel', ['dashboard'], ['class' => 'btn btn-danger']) ?>
                                         </div>
                                         <?php ActiveForm::end() ?>

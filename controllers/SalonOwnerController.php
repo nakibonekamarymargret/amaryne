@@ -341,57 +341,56 @@ class SalonOwnerController extends Controller
     {
         $this->layout = 'ownerLayout';
 
-        $salon = ProductsModel::find()->where(['owner_id' => Yii::$app->user->id])->one();
+        $salon = SalonModel::find()->where(['owner_id' => Yii::$app->user->id])->one();
 
         if ($salon === null) {
             Yii::$app->session->setFlash('error', 'Please create a salon first.');
             return $this->redirect(['salon-owner/create-salon']);
         }
 
-        $model = new Services();
-        $services = Services::find()->where(['salon_id' => $salon->id, 'status' => 'active'])->all();
+        $model = new ProductsModel();
+        $products = ProductsModel::find()->where(['salon_id' => $salon->id, 'status' => 'active'])->all();
 
-        return $this->render('services', [
+        return $this->render('products', [
             'salon' => $salon,
             'model' => $model,
-            'services' => $services,
+            'products' => $products,
             'salon_id' => $salon->id,
         ]);
     }
 
-    public function actionCreateProduct()
+    public function actionCreateProducts()
     {
-        $model = new Services();
-        $salon = ProductsModel::find()->where(['owner_id' => Yii::$app->user->id])->one();
+        $model = new ProductsModel();
+        $salon = SalonModel::find()->where(['owner_id' => Yii::$app->user->id])->one();
 
         if ($salon !== null) {
             $model->salon_id = $salon->id;
         } else {
             Yii::$app->session->setFlash('error', 'Salon not found. Please create a salon first.');
-            return $this->redirect(['salon-owner/create-salon']);
+            return $this->redirect(['salon-owner/create-products']);
         }
 
         if ($model->load(Yii::$app->request->post())) {
-            $file = UploadedFile::getInstance($model, 'service_image');
+            $file = UploadedFile::getInstance($model, 'image');
             if ($file) {
-                $model->service_image = 'uploads/' . uniqid('service_') . '.' . $file->extension;
-                $file->saveAs($model->service_image);
+                $model->image = 'uploads/' . uniqid('product_') . '.' . $file->extension;
+                $file->saveAs($model->image);
             }
 
             if ($model->save()) {
-                Yii::$app->session->setFlash('success', 'Service created successfully.');
-                return $this->redirect(['salon-owner/services']);
+                Yii::$app->session->setFlash('success', 'Product added successfully.');
+                return $this->redirect(['salon-owner/products']);
             } else {
-                Yii::$app->session->setFlash('error', 'Error creating service: ' . implode(', ', $model->getFirstErrors()));
+                Yii::$app->session->setFlash('error', 'Error creating product: ' . implode(', ', $model->getFirstErrors()));
             }
         }
 
-        return $this->render('create-service', [
+        return $this->render('create-products', [
             'model' => $model,
         ]);
     }
    
-    
 
     protected function findModel($id)
     {
