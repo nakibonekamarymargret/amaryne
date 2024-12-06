@@ -8,9 +8,7 @@ use yii\widgets\ActiveForm;
   integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
   integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-
-<div class="container-fluid salon-index ">
+<div class="container-fluid salon-index position-relative">
   <div class="row pt-5">
     <div class="col-lg-3">
 
@@ -20,7 +18,8 @@ use yii\widgets\ActiveForm;
       ]);
       ?>
     </div>
-    <div class="col-lg-9 d-flex justify-content-between align-items-center">
+    <div class="col-lg-9">
+      <!-- Product Wrapper -->
       <div class="product-wrapper row">
         <?php foreach ($products as $index => $product): ?>
           <div class="col-md-4 product-content">
@@ -31,16 +30,15 @@ use yii\widgets\ActiveForm;
                 <p class="text-dark fs-6 fw-bolder">
                   <?= Html::encode($product->name) ?>
                 </p>
-
               </div>
               <div class="d-flex justify-content-between align-items-center mt-3">
                 <p class="text-dark fs-6 fw-normal mb-0">Shs.
                   <?= Html::encode($product->price) ?>
                 </p>
-
-                <a href="#">
-                  <i class=" icon fa-solid fa-plus"></i>
-                </a>
+                <button class="btn btn-sm btn-outline-success increment ms-2" data-id="<?= $product->id ?>"
+                  data-price="<?= $product->price ?>">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
               </div>
             </div>
           </div>
@@ -50,41 +48,40 @@ use yii\widgets\ActiveForm;
           <?php endif; ?>
         <?php endforeach; ?>
       </div>
-      <div class="shopping-cart mt-4">
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h5 class="card-title text-center mb-3 text-primary">Make Your Order Today</h5>
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <i class="fa-solid fa-cart-shopping fs-4">
-          <span class="badge bg-danger cart-count position-absolute top-0 start-100 translate-middle rounded-circle">
+    </div>
+  </div>
+
+  <!-- Shopping Cart -->
+  <div class="shopping-cart position-absolute top-0 end-0 p-3">
+    <div class="cart row">
+      <div class="col-md-4 cart-content">
+        <div class="position-relative d-inline-block">
+          <i class="fa-solid fa-cart-shopping fs-4 text-black"></i>
+          <span class="text-dark  mx-2 cart-count position-absolute top-0 start-100 translate-middle rounded-circle">
             0
           </span>
-        </i>
-        <div class="d-flex align-items-center">
-          <button class="btn btn-sm btn-outline-danger decrement me-2" data-id="<?= $product->id ?>" 
-                  data-price="<?= $product->price ?>">
+        </div>
+        <h5 class="mt-3 text-primary">Your Cart</h5>
+        <div class="d-flex justify-content-center align-items-center my-3">
+          <button class="btn btn-sm btn-outline-danger decrement me-2" data-id="<?= $product->id ?>"
+            data-price="<?= $product->price ?>">
             <i class="fa-solid fa-minus"></i>
           </button>
           <span class="quantity badge bg-secondary fs-6" id="quantity-<?= $product->id ?>">0</span>
-          <button class="btn btn-sm btn-outline-success increment ms-2" data-id="<?= $product->id ?>" 
-                  data-price="<?= $product->price ?>">
+          <button class="btn btn-sm btn-outline-success increment ms-2" data-id="<?= $product->id ?>"
+            data-price="<?= $product->price ?>">
             <i class="fa-solid fa-plus"></i>
           </button>
         </div>
-      </div>
-      <div class="text-center">
         <p class="mb-1">Total Items: <span class="fw-bold cart-total-items">0</span></p>
-        <p class="mb-1">Total Price: <span class="fw-bold text-success">Shs. 
-          <span class="cart-total-price">0</span></span></p>
+        <p class="mb-1">Total Price: <span class="fw-bold text-success">Shs.
+            <span class="cart-total-price">0</span></span></p>
+        <button class="btn btn-primary w-100 mt-3">Proceed to Checkout</button>
       </div>
-      <button class="btn btn-primary w-100 mt-3">Proceed to Checkout</button>
     </div>
   </div>
 </div>
 
-    </div>
-  </div>
-</div>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     let cartCount = 0;
