@@ -20,14 +20,14 @@ use yii\widgets\ActiveForm;
       ]);
       ?>
     </div>
-    <div class="col-lg-9">
-      <div class="product-wrapper">
+    <div class="col-lg-9 d-flex justify-content-between align-items-center">
+      <div class="product-wrapper row">
         <?php foreach ($products as $index => $product): ?>
           <div class="col-md-4 product-content">
             <div class="body">
               <div class="d-flex justify-content-between mt-3">
-              <img src="<?= Url::to('@web/' . Html::encode($product->image)) ?>"
-              alt="<?= Html::encode($product->name) ?>" class="product-image" >
+                <img src="<?= Url::to('@web/' . Html::encode($product->image)) ?>"
+                  alt="<?= Html::encode($product->name) ?>" class="product-image">
                 <p class="text-dark fs-6 fw-bolder">
                   <?= Html::encode($product->name) ?>
                 </p>
@@ -37,8 +37,9 @@ use yii\widgets\ActiveForm;
                 <p class="text-dark fs-6 fw-normal mb-0">Shs.
                   <?= Html::encode($product->price) ?>
                 </p>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#makeOrderModal">
-                    <i class=" icon fa-solid fa-plus"></i>
+
+                <a href="#">
+                  <i class=" icon fa-solid fa-plus"></i>
                 </a>
               </div>
             </div>
@@ -49,21 +50,88 @@ use yii\widgets\ActiveForm;
           <?php endif; ?>
         <?php endforeach; ?>
       </div>
-
+      <div class="shopping-cart mt-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title text-center mb-3 text-primary">Make Your Order Today</h5>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <i class="fa-solid fa-cart-shopping fs-4">
+          <span class="badge bg-danger cart-count position-absolute top-0 start-100 translate-middle rounded-circle">
+            0
+          </span>
+        </i>
+        <div class="d-flex align-items-center">
+          <button class="btn btn-sm btn-outline-danger decrement me-2" data-id="<?= $product->id ?>" 
+                  data-price="<?= $product->price ?>">
+            <i class="fa-solid fa-minus"></i>
+          </button>
+          <span class="quantity badge bg-secondary fs-6" id="quantity-<?= $product->id ?>">0</span>
+          <button class="btn btn-sm btn-outline-success increment ms-2" data-id="<?= $product->id ?>" 
+                  data-price="<?= $product->price ?>">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="text-center">
+        <p class="mb-1">Total Items: <span class="fw-bold cart-total-items">0</span></p>
+        <p class="mb-1">Total Price: <span class="fw-bold text-success">Shs. 
+          <span class="cart-total-price">0</span></span></p>
+      </div>
+      <button class="btn btn-primary w-100 mt-3">Proceed to Checkout</button>
     </div>
   </div>
 </div>
 
-<!-- make order -->
-<div class="modal " id="makeOrderModal" tabindex="-1" aria-labelledby="makeOrderModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="makeOrderModalLabel">Purchase <span>Product name</span></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                
-            </div>
-        </div>
     </div>
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let cartCount = 0;
+    let totalPrice = 0;
+
+    document.querySelectorAll(".increment").forEach(button => {
+      button.addEventListener("click", function () {
+        const productId = this.dataset.id;
+        const productPrice = parseInt(this.dataset.price);
+        const quantityElement = document.getElementById(`quantity-${productId}`);
+
+        // Increment quantity
+        let quantity = parseInt(quantityElement.innerText);
+        quantity += 1;
+        quantityElement.innerText = quantity;
+
+        // Update cart
+        cartCount += 1;
+        totalPrice += productPrice;
+        updateCart();
+      });
+    });
+
+    document.querySelectorAll(".decrement").forEach(button => {
+      button.addEventListener("click", function () {
+        const productId = this.dataset.id;
+        const productPrice = parseInt(this.dataset.price);
+        const quantityElement = document.getElementById(`quantity-${productId}`);
+
+        // Decrement quantity
+        let quantity = parseInt(quantityElement.innerText);
+        if (quantity > 0) {
+          quantity -= 1;
+          quantityElement.innerText = quantity;
+
+          // Update cart
+          cartCount -= 1;
+          totalPrice -= productPrice;
+          updateCart();
+        }
+      });
+    });
+
+    function updateCart() {
+      document.querySelector(".cart-count").innerText = cartCount;
+      document.querySelector(".cart-total-items").innerText = cartCount;
+      document.querySelector(".cart-total-price").innerText = totalPrice;
+    }
+  });
+</script>

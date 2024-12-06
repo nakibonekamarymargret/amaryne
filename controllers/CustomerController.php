@@ -92,6 +92,8 @@ class CustomerController extends Controller
             'user' => $user,
         ]);
     }
+    public function actionMakeOrder(){
     
+    }
     
 }

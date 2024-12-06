@@ -2,13 +2,14 @@
 
 namespace app\controllers;
 
+use app\models\OrdersModel;
 use app\models\ProductsModel;
 use app\models\SalonModel;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use Yii;
 /**
  * ProductsController implements the CRUD actions for ProductsModel model.
  */
@@ -33,18 +34,19 @@ class ProductsController extends Controller
     }
 
     public function actionIndex()
-{
-    $topSellers = ProductsModel::find()->orderBy(['price' => SORT_DESC])->limit(5)->all();
-    $products  = ProductsModel::find()
-    ->orderBy(['price' => SORT_DESC])
-    ->all();
-    $this->view->params['sidebarData'] = [
-        'topSellers' => $topSellers
-    ];
+    {
+        $topSellers = ProductsModel::find()->orderBy(['price' => SORT_DESC])->limit(5)->all();
+        $products = ProductsModel::find()
+            ->orderBy(['price' => SORT_DESC])
+            ->all();
+        $this->view->params['sidebarData'] = [
+            'topSellers' => $topSellers
+        ];
 
-    return $this->render('index', ['products' => $products
-    ]);
-}
+        return $this->render('index', [
+            'products' => $products
+        ]);
+    }
 
 
     public function actionView($id)
@@ -109,14 +111,29 @@ class ProductsController extends Controller
 
         return $this->redirect(['index']);
     }
+    public function actionMakeOrder()
+    {
+        $model = new OrdersModel();
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
 
-    /**
-     * Finds the ProductsModel model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return ProductsModel the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+            if ($model->save()) {
+                return ['success' => true, 'message' => 'Order placed successfully!'];
+            }
+
+            return ['success' => false, 'errors' => $model->errors];
+        }
+
+        return $this->renderAjax('create', [
+            'model' => $model,
+        ]);
+    } /**
+      * Finds the ProductsModel model based on its primary key value.
+      * If the model is not found, a 404 HTTP exception will be thrown.
+      * @param int $id ID
+      * @return ProductsModel the loaded model
+      * @throws NotFoundHttpException if the model cannot be found
+      */
     protected function findModel($id)
     {
         if (($model = ProductsModel::findOne(['id' => $id])) !== null) {
