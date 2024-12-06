@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\ProductsModel;
+use app\models\SalonModel;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -31,38 +32,21 @@ class ProductsController extends Controller
         );
     }
 
-    /**
-     * Lists all ProductsModel models.
-     *
-     * @return string
-     */
     public function actionIndex()
-    {
-        $dataProvider = new ActiveDataProvider([
-            'query' => ProductsModel::find(),
-            /*
-            'pagination' => [
-                'pageSize' => 50
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ]
-            ],
-            */
-        ]);
+{
+    $topSellers = ProductsModel::find()->orderBy(['price' => SORT_DESC])->limit(5)->all();
+    $products  = ProductsModel::find()
+    ->orderBy(['price' => SORT_DESC])
+    ->all();
+    $this->view->params['sidebarData'] = [
+        'topSellers' => $topSellers
+    ];
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+    return $this->render('index', ['products' => $products
+    ]);
+}
 
-    /**
-     * Displays a single ProductsModel model.
-     * @param int $id ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+
     public function actionView($id)
     {
         return $this->render('view', [

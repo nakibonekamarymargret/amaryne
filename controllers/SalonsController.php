@@ -15,7 +15,6 @@ class SalonsController extends Controller
 {
     public function actionIndex()
     {
-        // Fetch popular hair salons
         $popularHairSalons = SalonModel::find()
             ->select(['salon.*', 'COUNT(services.id) AS service_count'])
             ->joinWith('services')
@@ -24,7 +23,6 @@ class SalonsController extends Controller
             ->orderBy(['service_count' => SORT_DESC])
             ->limit(4)
             ->all();
-
         $popularNailClinics = SalonModel::find()
             ->select(['salon.*', 'COUNT(services.id) AS service_count'])
             ->joinWith('services')
@@ -54,17 +52,19 @@ class SalonsController extends Controller
             ->groupBy('salon.id')
             ->orderBy(['service_count' => SORT_DESC])
             ->all();
-        return $this->render('index', [
+        $this->view->params['sidebarData'] = [
             'popularHairSalons' => $popularHairSalons,
             'popularNailClinics' => $popularNailClinics,
             'beautyShops' => $beautyShops,
-            'otherSalons' => $otherSalons,
-            'salons' => $salons,
+            'otherSalons' => $otherSalons
+        ];
 
+        return $this->render('index', [
+            'salons' => $salons
         ]);
     }
 
-    public function actionView($id)
+     public function actionView($id)
     {
         $salon = SalonModel::findOne($id);
 

@@ -123,7 +123,7 @@ use yii\helpers\Url;
                     <div class="text mx-2">
                         <p class="card-text">Purchase salon-grade products to maintain your look at home. Get exclusive
                             discounts.</p>
-                        <a href="#" class="card-btn custom-btn" style="margin-left:8rem">Shop
+                        <a href="<?= Url::to(['/products/index']) ?>" class="card-btn custom-btn" style="margin-left:8rem">Shop
                             Products</a>
                     </div>
 

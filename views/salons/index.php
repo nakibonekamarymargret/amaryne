@@ -6,17 +6,21 @@ use yii\helpers\Url;
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-<main class="salon-index">
-    <div class="container-fluid mt-5  ">
+
+    <div class="container-fluid salon-index ">
         <div class="row pt-5">
             <div class="col-lg-3">
-            <?= $this->render('/partialviews/_sidenav', [
+            <!-- < ?= $this->render('/partialviews/_sidenav', [
             'popularHairSalons' => $popularHairSalons,
             'popularNailClinics' => $popularNailClinics,
             'beautyShops' => $beautyShops,
             'otherSalons'=>$otherSalons
-            ]); ?>
-
+            ]); ?> -->
+            <?php
+                echo $this->render('/partialviews/_sidenav', [
+                    'sidebarData' => $this->params['sidebarData'] ?? []
+                ]);
+                ?>
             </div>
             <div class="col-lg-9 col-md-8 col-sm-4 col-xs-6">
                 <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);"
@@ -100,4 +104,3 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
-</main>

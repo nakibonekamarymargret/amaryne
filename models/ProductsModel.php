@@ -74,7 +74,7 @@ class ProductsModel extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Orders]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery|OrdersQuery
      */
     public function getOrders()
     {
@@ -84,10 +84,19 @@ class ProductsModel extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Salon]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery|yii\db\ActiveQuery
      */
     public function getSalon()
     {
-        return $this->hasOne(SalonModel::class, ['id' => 'salon_id']);
+        return $this->hasOne(Salon::class, ['id' => 'salon_id']);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return ProductsQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new ProductsQuery(get_called_class());
     }
 }
